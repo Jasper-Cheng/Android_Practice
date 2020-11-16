@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android_practice.adapter.recycleViewAdapter;
+import com.example.android_practice.decoration.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class RecycleViewActivity extends AppCompatActivity {
         gridLayoutManager=new GridLayoutManager(this,5);
         recycleView.setLayoutManager(gridLayoutManager);
         recycleViewAdapter=new recycleViewAdapter(fullFruitData());
+        recycleView.addItemDecoration(new DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL));
         recycleView.setAdapter(recycleViewAdapter);
     }
 
