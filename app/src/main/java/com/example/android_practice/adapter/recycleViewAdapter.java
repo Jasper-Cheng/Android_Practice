@@ -17,6 +17,7 @@ import java.util.List;
 
 public class recycleViewAdapter extends RecyclerView.Adapter<recycleViewAdapter.ViewHolder> {
     private List<String> fruitlist=null;
+    private OnItemClickListener onItemClickListener;
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -25,7 +26,15 @@ public class recycleViewAdapter extends RecyclerView.Adapter<recycleViewAdapter.
         holder.fruitImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(view.getContext(),"you clicked view"+fruitlist.get(holder.getAdapterPosition()),Toast.LENGTH_LONG).show();
+                onItemClickListener.onItemClick(v,holder.getAdapterPosition());
+//                Toast.makeText(view.getContext(),"you clicked view"+fruitlist.get(holder.getAdapterPosition()),Toast.LENGTH_LONG).show();
+            }
+        });
+        holder.fruitImages.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onItemClickListener.onItemLongClick(v,holder.getAdapterPosition());
+                return true;
             }
         });
         return holder;
@@ -50,6 +59,15 @@ public class recycleViewAdapter extends RecyclerView.Adapter<recycleViewAdapter.
             fruitImages=view.findViewById(R.id.fruit_image);
             fruitName=view.findViewById(R.id.fruitname);
         }
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(View view,int position);
+        void onItemLongClick(View view,int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener=onItemClickListener;
     }
 
     public recycleViewAdapter(List<String> fruitlist){

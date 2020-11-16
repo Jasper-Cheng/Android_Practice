@@ -1,6 +1,8 @@
 package com.example.android_practice;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -29,6 +31,17 @@ public class RecycleViewActivity extends AppCompatActivity {
         gridLayoutManager=new GridLayoutManager(this,5);
         recycleView.setLayoutManager(gridLayoutManager);
         recycleViewAdapter=new recycleViewAdapter(fullFruitData());
+        recycleViewAdapter.setOnItemClickListener(new recycleViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(RecycleViewActivity.this,"click this "+position,Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                Toast.makeText(RecycleViewActivity.this,"longClick this "+position,Toast.LENGTH_LONG).show();
+            }
+        });
         recycleView.addItemDecoration(new DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL));
         recycleView.setAdapter(recycleViewAdapter);
     }
