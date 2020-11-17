@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Android_Practice</string>
+    <string name="normal_notification">normal_notification</string>
+    <string name="fold_notification">fold_notification</string>
+    <string name="hang_notification">hang_notification</string>
 </resources>
