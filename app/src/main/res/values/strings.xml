@@ -3,4 +3,5 @@
     <string name="normal_notification">normal_notification</string>
     <string name="fold_notification">fold_notification</string>
     <string name="hang_notification">hang_notification</string>
+    <string name="open_fold_text">展开后的自定义视图</string>
 </resources>
