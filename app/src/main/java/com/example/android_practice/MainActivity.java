@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -11,10 +12,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 
 
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -24,9 +26,10 @@ import adapter.FragmentAdapter;
 import fragment.ListFragment;
 
 public class MainActivity extends AppCompatActivity {
-    private DrawerLayout mDrawerLayout;
+    private CoordinatorLayout mDrawerLayout;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
+    private FloatingActionButton floatButton;
 
     @Override
     public void onCreate( Bundle savedInstanceState) {
@@ -36,29 +39,22 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ActionBar ab=getSupportActionBar();
         ab.setHomeAsUpIndicator(R.mipmap.ic_launcher);
-        ab.setDisplayHomeAsUpEnabled(true);
         mViewPager=findViewById(R.id.viewpager);
-        mDrawerLayout=findViewById(R.id.dl_main_drawer);
-        NavigationView navigationView=findViewById(R.id.nv_main_navigation);
-        if (navigationView!=null){
-            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                    menuItem.setChecked(true);
-                    String title=menuItem.getTitle().toString();
-                    Toast.makeText(getApplicationContext(),title,Toast.LENGTH_LONG).show();
-                    mDrawerLayout.closeDrawers();
-                    return true;
-                }
-            });
-        }
+        mDrawerLayout=findViewById(R.id.main_content);
+        floatButton=findViewById(R.id.floatButton);
+        floatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(mDrawerLayout,"点击成功",Snackbar.LENGTH_SHORT).show();
+            }
+        });
         initViewPager();
     }
 
     public void initViewPager(){
         mTabLayout=this.findViewById(R.id.tabs);
         List<String> titles=new ArrayList<>();
-        for(int i=0;i<12;i++){
+        for(int i=0;i<20;i++){
             titles.add("I'm is "+i);
         }
         for (int i=0;i<titles.size();i++){
@@ -75,13 +71,4 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-       switch (item.getItemId()){
-           case android.R.id.home:
-               mDrawerLayout.openDrawer(GravityCompat.START);
-               return true;
-       }
-       return super.onOptionsItemSelected(item);
-    }
 }
