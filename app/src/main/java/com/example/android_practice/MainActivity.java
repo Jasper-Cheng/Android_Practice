@@ -13,9 +13,11 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
@@ -26,7 +28,8 @@ import adapter.FragmentAdapter;
 import fragment.ListFragment;
 
 public class MainActivity extends AppCompatActivity {
-    private CoordinatorLayout mDrawerLayout;
+    private DrawerLayout mDrawerLayout;
+    private CoordinatorLayout mCoordinatorLayout;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private FloatingActionButton floatButton;
@@ -40,12 +43,26 @@ public class MainActivity extends AppCompatActivity {
         final ActionBar ab=getSupportActionBar();
         ab.setHomeAsUpIndicator(R.mipmap.ic_launcher);
         mViewPager=findViewById(R.id.viewpager);
-        mDrawerLayout=findViewById(R.id.main_content);
+        mCoordinatorLayout=findViewById(R.id.coordinator);
+        mDrawerLayout=findViewById(R.id.dl_main_drawer);
+        NavigationView navigationView=findViewById(R.id.nv_main_navigation);
+        if(navigationView!=null){
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    menuItem.setChecked(true);
+                    String title=menuItem.getTitle().toString();
+                    Toast.makeText(MainActivity.this,title,Toast.LENGTH_SHORT).show();
+                    mDrawerLayout.closeDrawers();
+                    return true;
+                }
+            });
+        }
         floatButton=findViewById(R.id.floatButton);
         floatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(mDrawerLayout,"点击成功",Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mCoordinatorLayout,"点击成功",Snackbar.LENGTH_SHORT).show();
             }
         });
         initViewPager();
@@ -71,4 +88,13 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
