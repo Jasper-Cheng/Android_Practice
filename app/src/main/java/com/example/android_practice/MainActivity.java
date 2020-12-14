@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager=findViewById(R.id.viewpager);
         mCoordinatorLayout=findViewById(R.id.coordinator);
         mDrawerLayout=findViewById(R.id.dl_main_drawer);
+
         NavigationView navigationView=findViewById(R.id.nv_main_navigation);
         if(navigationView!=null){
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -70,10 +73,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void initCustomToolbar(){
         toolbar=findViewById(R.id.toolbar);
-        toolbar.setTitle("Jasper");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_launcher);
+        CollapsingToolbarLayout collapsingToolbarLayout=findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle("Jasper");
+        AppBarLayout appbar=findViewById(R.id.appbar);
+        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+                if(Math.abs(i) >= appBarLayout.getTotalScrollRange()/2){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                }else{
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_launcher);
+                }
+            }
+        });
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

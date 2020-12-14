@@ -12,15 +12,35 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:id="@+id/appbar"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ToolbarPopupTheme"/>
+                android:layout_height="160dp"
+                android:id="@+id/collapsing_toolbar"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleMarginEnd="64dp"
+                app:expandedTitleMarginStart="48dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_launcher"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/backdrop"/>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:popupTheme="@style/ToolbarPopupTheme"/>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabs"
@@ -29,7 +49,9 @@
                 app:tabIndicatorColor="#ADBE107E"
                 app:tabMode="scrollable"/>
 
+
         </com.google.android.material.appbar.AppBarLayout>
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
