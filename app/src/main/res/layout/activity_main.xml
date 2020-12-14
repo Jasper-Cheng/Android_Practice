@@ -69,6 +69,23 @@
             app:layout_anchorGravity="bottom|right|end"
             android:src="@drawable/ic_launcher_background"
             />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:padding="15dp"
+            android:background="@android:color/holo_red_dark"
+            app:layout_behavior="Behavior.FooterBehavior">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="自定义Behavior"
+                />
+
+        </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -78,4 +95,5 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/drawer_view"/>
+
 </androidx.drawerlayout.widget.DrawerLayout>
