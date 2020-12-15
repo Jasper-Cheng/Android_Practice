@@ -16,6 +16,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         customView=findViewById(R.id.customView);
 //        customView.setAnimation(AnimationUtils.loadAnimation(this,R.anim.translate));
-        ObjectAnimator.ofFloat(customView,"translationX",0,300).setDuration(1000).start();
+//        ObjectAnimator.ofFloat(customView,"translationX",0,300).setDuration(1000).start();
     }
 }
