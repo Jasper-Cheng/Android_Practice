@@ -37,7 +37,8 @@ public class CustomView_layout extends View {
             case MotionEvent.ACTION_MOVE:
                 int offsetX=x-lastX;
                 int offsetY=y-lastY;
-                layout(getLeft()+offsetX,getTop()+offsetY,getRight()+offsetX,+getBottom()+offsetY);
+                offsetLeftAndRight(offsetX);
+                offsetTopAndBottom(offsetY);
                 break;
         }
         return true;
