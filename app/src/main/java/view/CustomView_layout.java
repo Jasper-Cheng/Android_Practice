@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
@@ -37,8 +39,11 @@ public class CustomView_layout extends View {
             case MotionEvent.ACTION_MOVE:
                 int offsetX=x-lastX;
                 int offsetY=y-lastY;
-                offsetLeftAndRight(offsetX);
-                offsetTopAndBottom(offsetY);
+                LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) getLayoutParams();
+//                ViewGroup.MarginLayoutParams layoutParams= (ViewGroup.MarginLayoutParams) getLayoutParams();
+                layoutParams.leftMargin=getLeft()+offsetX;
+                layoutParams.topMargin=getTop()+offsetY;
+                setLayoutParams(layoutParams);
                 break;
         }
         return true;
