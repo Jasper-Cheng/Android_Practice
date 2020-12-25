@@ -4,16 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import view.CustomView_layout;
+import view.InvalidTextView;
 
 public class MainActivity extends AppCompatActivity {
-    private CustomView_layout customView;
+    private InvalidTextView customView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         customView=findViewById(R.id.customView);
-        customView.smoothScrollTo(-600,-600);
     }
 }
