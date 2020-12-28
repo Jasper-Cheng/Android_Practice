@@ -4,10 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import view.InvalidTextView;
+import view.RectView;
 
 public class MainActivity extends AppCompatActivity {
-    private InvalidTextView customView;
+    private RectView customView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
