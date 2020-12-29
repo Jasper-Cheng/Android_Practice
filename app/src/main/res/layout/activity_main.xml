@@ -12,4 +12,18 @@
         app:title_bg="@android:color/holo_orange_dark"
         app:title_text_color="@android:color/holo_blue_light" />
 
+    <view.HorizontalView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/lv_one"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ListView
+            android:id="@+id/lv_two"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </view.HorizontalView>
 </LinearLayout>
