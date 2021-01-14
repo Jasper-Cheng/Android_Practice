@@ -4,70 +4,46 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private Button HttpClientGetButton = null;
-    private Button HttpClientPostButton = null;
+    private Button HttpURLClientGetButton = null;
     private TextView content = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        HttpClientGetButton = findViewById(R.id.HttpClientGetButton);
-        HttpClientPostButton = findViewById(R.id.HttpClientPostButton);
+        HttpURLClientGetButton = findViewById(R.id.HttpURLClientGetButton);
         content = findViewById(R.id.content);
-
-        HttpClientGetButton.setOnClickListener(new View.OnClickListener() {
+        HttpURLClientGetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AsyncTask<String, Void, String>() {
-                    @Override
-                    protected String doInBackground(String... strings) {
-                        return useHttpClientGet(strings[0]);
-                    }
 
                     @Override
-                    protected void onPostExecute(String s) {
-                        content.setText(s);
-                    }
-                }.execute("https://www.baidu.com/");
-            }
-        });
-        HttpClientPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AsyncTask<String, Void, String>() {
-                    @Override
                     protected String doInBackground(String... strings) {
-                        return useHttpClientPost(strings[0]);
+                        return useHttpUrlConnectionPost(strings[0]);
                     }
 
                     @Override
@@ -79,38 +55,55 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private HttpClient createHttpClient() {
-        HttpParams mHttpParams = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(mHttpParams, 15000);
-
-        HttpConnectionParams.setSoTimeout(mHttpParams, 15000);
-        HttpConnectionParams.setTcpNoDelay(mHttpParams, true);
-        HttpProtocolParams.setVersion(mHttpParams, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setContentCharset(mHttpParams, HTTP.UTF_8);
-
-        HttpProtocolParams.setUseExpectContinue(mHttpParams, true);
-        HttpClient mHttpClient = new DefaultHttpClient(mHttpParams);
-        return mHttpClient;
+    public static HttpURLConnection getHttpURLConnection(String url) {
+        HttpURLConnection mHttpURLConnection = null;
+        try {
+            URL mUrl = new URL(url);
+            mHttpURLConnection = (HttpURLConnection) mUrl.openConnection();
+            mHttpURLConnection.setConnectTimeout(15000);
+            mHttpURLConnection.setReadTimeout(15000);
+            mHttpURLConnection.setRequestMethod("POST");
+            mHttpURLConnection.setRequestProperty("Connection", "Keep-Alive");
+            mHttpURLConnection.setDoInput(true);
+            mHttpURLConnection.setDoOutput(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mHttpURLConnection;
     }
 
-    private String useHttpClientGet(String url) {
-        HttpGet mHttpGet = new HttpGet(url);
-        mHttpGet.addHeader("Connection", "Keep-Alive");
-        HttpClient mHttpClient = createHttpClient();
+    public static void postParams(OutputStream outputStream, List<NameValuePair> paramsList) throws IOException {
+        StringBuilder mStringBuilder = new StringBuilder();
+        for (NameValuePair pair : paramsList) {
+            if (!TextUtils.isEmpty(mStringBuilder)) {
+                mStringBuilder.append("&");
+            }
+            mStringBuilder.append(URLEncoder.encode(pair.getName(), "UTF-8"));
+            mStringBuilder.append("=");
+            mStringBuilder.append(URLEncoder.encode(pair.getValue(), "UTF-8"));
+        }
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+        bufferedWriter.write(mStringBuilder.toString());
+        bufferedWriter.flush();
+        bufferedWriter.close();
+
+    }
+
+    private String useHttpUrlConnectionPost(String url) {
+        InputStream mInputStream = null;
+        HttpURLConnection mHttpURLConnection = getHttpURLConnection(url);
         try {
             Log.e("Jasper", url);
-            HttpResponse mHttpResponse = mHttpClient.execute(mHttpGet);
-            HttpEntity mHttpEntity = mHttpResponse.getEntity();
-            int code = mHttpResponse.getStatusLine().getStatusCode();
-            Log.e("Jasper", "GET请求状态码:" + code);
-            if (null != mHttpEntity) {
-                InputStream mInputStream = mHttpEntity.getContent();
-                String response = convertStreamToString(mInputStream);
-                mInputStream.close();
-                return response;
-            } else {
-                return "null";
-            }
+            List<NameValuePair> postParams = new ArrayList<>();
+//            postParams.add(new BasicNameValuePair("ip","59.108.54.137"));
+//            postParams(mHttpURLConnection.getOutputStream(),postParams);
+            mHttpURLConnection.connect();
+            mInputStream = mHttpURLConnection.getInputStream();
+            int code = mHttpURLConnection.getResponseCode();
+            Log.e("Jasper", "请求码" + code);
+            String response = convertStreamToString(mInputStream);
+            mInputStream.close();
+            return response;
         } catch (IOException e) {
             e.printStackTrace();
             return "IOException";
@@ -127,32 +120,5 @@ public class MainActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    private String useHttpClientPost(String url) {
-        HttpPost mHttpPost = new HttpPost(url);
-        mHttpPost.addHeader("Connection", "Keep-Alive");
-        try {
-            Log.e("Jasper", url);
-            HttpClient mHttpClient = createHttpClient();
-//            List<NameValuePair> postParams=new ArrayList<>();
-//            postParams.add(new BasicNameValuePair("ip","59.108.54.37"));
-//            postParams.add(new BasicNameValuePair("accessKey","public"));
-//            mHttpPost.setEntity(new UrlEncodedFormEntity(postParams));
-            HttpResponse mHttpResponse = mHttpClient.execute(mHttpPost);
-            HttpEntity mHttpEntity = mHttpResponse.getEntity();
-            int code = mHttpResponse.getStatusLine().getStatusCode();
-            Log.e("Jasper", "POST请求状态码:" + code);
-            if (null != mHttpEntity) {
-                InputStream mInputStream = mHttpEntity.getContent();
-                String response = convertStreamToString(mInputStream);
-                mInputStream.close();
-                return response;
-            } else {
-                return "null";
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "IOException";
-        }
-    }
 
 }
