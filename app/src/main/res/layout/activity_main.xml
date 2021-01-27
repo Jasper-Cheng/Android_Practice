@@ -7,16 +7,16 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/ImageLoader"
+        android:id="@+id/NetWorkImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ImageLoader"
+        android:text="NetWorkImageView"
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
