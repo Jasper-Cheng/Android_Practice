@@ -7,10 +7,10 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/StringRequest"
+        android:id="@+id/JsonRequest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="StringRequest"
+        android:text="JsonRequest"
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -11,27 +11,30 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
-    private Button StringRequest = null;
+    private Button JsonRequest = null;
     private TextView content = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        StringRequest = findViewById(R.id.StringRequest);
+        JsonRequest = findViewById(R.id.JsonRequest);
         content = findViewById(R.id.content);
-        StringRequest.setOnClickListener(new View.OnClickListener() {
+        JsonRequest.setOnClickListener(new View.OnClickListener() {
+            RequestQueue mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+
             @Override
             public void onClick(View v) {
-                RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-                StringRequest mStringRequest = new StringRequest(Request.Method.GET, "https://www.baidu.com", new Response.Listener<String>() {
+                JsonObjectRequest mJsonObjectRequest = new JsonObjectRequest("https://www.wanandroid.com/article/list/0/json", null, new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        content.setText(response);
+                    public void onResponse(JSONObject response) {
+                        content.setText(response.toString());
 
                     }
                 }, new Response.ErrorListener() {
@@ -40,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                         content.setText(error.getMessage());
                     }
                 });
-                mQueue.add(mStringRequest);
+                mRequestQueue.add(mJsonObjectRequest);
             }
         });
     }
