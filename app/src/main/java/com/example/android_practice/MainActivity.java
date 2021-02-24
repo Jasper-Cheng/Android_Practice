@@ -3,11 +3,14 @@ package com.example.android_practice;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +18,7 @@ import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -104,6 +108,45 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 OkHttp_content.setText(s);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        OkHttp_FILEUPLOAD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown;charset=utf-8");
+                String filepath = "";
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    filepath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                } else {
+                    return;
+                }
+                File file = new File(filepath, "jasper.txt");
+                Request request = new Request.Builder().url("https://api.github.com/markdown/raw")
+                        .post(RequestBody.create(MEDIA_TYPE_MARKDOWN, file))
+                        .build();
+                okHttpClient.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, final IOException e) {
+                        myHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                OkHttp_content.setText("error" + e.getMessage());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        final String s = response.body().string();
+                        myHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                OkHttp_content.setText("jasper:" + s);
                             }
                         });
                     }
