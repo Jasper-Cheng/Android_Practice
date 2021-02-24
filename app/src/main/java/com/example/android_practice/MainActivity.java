@@ -14,8 +14,10 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +54,38 @@ public class MainActivity extends AppCompatActivity {
                 final Request request = new Request.Builder().url("https://www.baidu.com").build();
                 Call call = okHttpClient.newCall(request);
                 //异步请求用enqueue,同步用execute
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, final IOException e) {
+                        myHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                OkHttp_content.setText(e.getMessage());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        final String s = response.body().string();
+                        myHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                OkHttp_content.setText(s);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+
+        OkHttp_POST.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RequestBody requestBody = new FormBody.Builder().add("ip", "110.110.110.110").build();
+                Request request = new Request.Builder().url("https://www.baidu.com").post(requestBody).build();
+                Call call = okHttpClient.newCall(request);
                 call.enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, final IOException e) {
