@@ -21,6 +21,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -190,7 +191,48 @@ public class MainActivity extends AppCompatActivity {
                         myHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                OkHttp_content.setText("jasper:" + file.length());
+                                OkHttp_content.setText("jasper:" + file.getPath() + ":" + file.length());
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        OkHttp_MultipartFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+                RequestBody requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("title", "jasper")
+                        .addFormDataPart("image", "jasper.jpg", RequestBody.create(MEDIA_TYPE_PNG, new File("/sdcard/jasper.jpg")))
+                        .build();
+
+                Request request = new Request.Builder()
+                        .header("Authorization", "Client-ID " + "...")
+                        .url("https://api.imgur.com/3/image")
+                        .post(requestBody)
+                        .build();
+
+                okHttpClient.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, final IOException e) {
+                        myHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                OkHttp_content.setText("error" + e.getMessage());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        final String s = response.body().string();
+                        myHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                OkHttp_content.setText("jasper:" + s);
                             }
                         });
                     }
