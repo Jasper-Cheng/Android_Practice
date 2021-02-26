@@ -11,7 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
@@ -147,6 +149,48 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 OkHttp_content.setText("jasper:" + s);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        OkHttp_FILEDOWNLOAD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Request request = new Request.Builder().url("https://mymodernmet.com/wp/wp-content/uploads/2019/05/Big-Picture-Natural-World-Photo-Contest-thumbnail.jpg").build();
+                okHttpClient.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, final IOException e) {
+                        myHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                OkHttp_content.setText("error" + e.getMessage());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        final InputStream inputStream = response.body().byteStream();
+                        FileOutputStream fileOutputStream = null;
+                        String filepath = getFilesDir().getAbsolutePath();
+                        final File file = new File(filepath, "jasper.jpg");
+                        if (file != null) {
+                            fileOutputStream = new FileOutputStream(file);
+                            byte[] buffer = new byte[2048];
+                            int len = 0;
+                            while ((len = inputStream.read(buffer)) != -1) {
+                                fileOutputStream.write(buffer, 0, len);
+                            }
+                            fileOutputStream.flush();
+                        }
+
+                        myHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                OkHttp_content.setText("jasper:" + file.length());
                             }
                         });
                     }
