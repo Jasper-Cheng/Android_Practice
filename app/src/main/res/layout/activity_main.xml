@@ -7,54 +7,35 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/OkHttp_GET"
+        android:id="@+id/Retrofit_GET"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OkHttp_GET"
+        android:text="Retrofit_GET"
         app:layout_constraintBottom_toTopOf="@id/guideline"
-        app:layout_constraintEnd_toStartOf="@+id/OkHttp_POST"
+        app:layout_constraintEnd_toStartOf="@+id/Retrofit_POST"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/OkHttp_POST"
+        android:id="@+id/Retrofit_POST"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OkHttp_POST"
+        android:text="Retrofit_POST"
         app:layout_constraintBottom_toTopOf="@id/guideline"
-        app:layout_constraintEnd_toStartOf="@+id/OkHttp_FILEUPLOAD"
-        app:layout_constraintStart_toEndOf="@+id/OkHttp_GET"
+        app:layout_constraintEnd_toStartOf="@+id/Retrofit_FILEPLOAD"
+        app:layout_constraintStart_toEndOf="@+id/Retrofit_GET"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/OkHttp_FILEUPLOAD"
+        android:id="@+id/Retrofit_FILEPLOAD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OkHttp_FILEUPLOAD"
+        android:text="Retrofit_FILEPLOAD"
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/OkHttp_POST"
+        app:layout_constraintStart_toEndOf="@+id/Retrofit_POST"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/OkHttp_FILEDOWNLOAD"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OkHttp_FILEDOWNLOAD"
-        app:layout_constraintBottom_toTopOf="@id/guideline2"
-        app:layout_constraintEnd_toStartOf="@id/OkHttp_MultipartFile"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline" />
-
-    <Button
-        android:id="@+id/OkHttp_MultipartFile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OkHttp_MultipartFile"
-        app:layout_constraintBottom_toTopOf="@id/guideline2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/OkHttp_FILEDOWNLOAD"
-        app:layout_constraintTop_toBottomOf="@id/guideline" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -64,21 +45,14 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="100dp" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="200dp" />
-
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/OkHttp_content"
+        android:id="@+id/Retrofit_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline2" />
+        app:layout_constraintTop_toBottomOf="@id/guideline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
