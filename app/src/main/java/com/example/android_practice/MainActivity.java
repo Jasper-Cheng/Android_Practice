@@ -41,11 +41,41 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String url = "https://www.baidu.com";
                 Retrofit retrofit = new Retrofit.Builder().baseUrl(url).addConverterFactory(GsonConverterFactory.create()).build();
-                Call<ResponseBody> call = retrofit.create(Service.class).getTest("wxarticle", "Java");
+                Call<ResponseBody> call = retrofit.create(Service.class).getTestGet("wxarticle", "Java");
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Retrofit_content.setText("success");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, final Throwable t) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Retrofit_content.setText(t.getMessage());
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        Retrofit_POST.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String baseUrl = "https://wanandroid.com";
+                Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create()).build();
+                Call<ResponseBody> call = retrofit.create(Service.class).getTestPost("wxarticle", "Java");
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
