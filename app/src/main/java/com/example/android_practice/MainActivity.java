@@ -3,13 +3,18 @@ package com.example.android_practice;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -73,6 +78,39 @@ public class MainActivity extends AppCompatActivity {
                 String baseUrl = "https://wanandroid.com";
                 Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create()).build();
                 Call<ResponseBody> call = retrofit.create(Service.class).getTestPost("wxarticle", "Java");
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Retrofit_content.setText("success");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, final Throwable t) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Retrofit_content.setText(t.getMessage());
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        Retrofit_FILEPLOAD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String baseUrl = "http://ip.taobao.com/service/";
+                Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create()).build();
+                File file = new File(Environment.getExternalStorageDirectory(), "wangshu.png");
+                RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
+                MultipartBody.Part photo = MultipartBody.Part.createFormData("photos", "wangshu.png", requestBody);
+                Call<ResponseBody> call = retrofit.create(Service.class).getTestMultipart(photo, requestBody);
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
