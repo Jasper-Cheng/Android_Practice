@@ -25,7 +25,7 @@ public class NextActivity extends AppCompatActivity {
                 MessageEvent messageEvent = new MessageEvent();
                 messageEvent.setName("Jasper");
                 messageEvent.setAge(26);
-                EventBus.getDefault().post(messageEvent);
+                EventBus.getDefault().postSticky(messageEvent);
                 finish();
             }
         });

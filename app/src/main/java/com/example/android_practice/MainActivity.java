@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onMoonEvent(MessageEvent messageEvent) {
         messageShow.setText(messageEvent.getName());
     }
