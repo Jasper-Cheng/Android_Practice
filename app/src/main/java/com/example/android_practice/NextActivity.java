@@ -6,6 +6,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.squareup.otto.Produce;
+
 import org.greenrobot.eventbus.EventBus;
 
 import Bean.MessageEvent;
@@ -23,12 +25,23 @@ public class NextActivity extends AppCompatActivity {
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MessageEvent messageEvent = new MessageEvent();
-                messageEvent.setName("Jasper");
-                messageEvent.setAge(26);
-                OttoBus.getInstance().post(messageEvent);
                 finish();
             }
         });
+        OttoBus.getInstance().register(this);
+    }
+
+    @Produce
+    public MessageEvent onShowMessage() {
+        MessageEvent messageEvent = new MessageEvent();
+        messageEvent.setName("Jasper");
+        messageEvent.setAge(26);
+        return messageEvent;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OttoBus.getInstance().unregister(this);
     }
 }
