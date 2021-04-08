@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.greenrobot.eventbus.EventBus;
 
 import Bean.MessageEvent;
+import BusPackage.OttoBus;
 
 public class NextActivity extends AppCompatActivity {
     Button postButton = null;
@@ -25,7 +26,7 @@ public class NextActivity extends AppCompatActivity {
                 MessageEvent messageEvent = new MessageEvent();
                 messageEvent.setName("Jasper");
                 messageEvent.setAge(26);
-                EventBus.getDefault().postSticky(messageEvent);
+                OttoBus.getInstance().post(messageEvent);
                 finish();
             }
         });
