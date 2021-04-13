@@ -2,19 +2,18 @@ package com.example.android_practice;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import bean.TestBean;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.ObservableEmitter;
-import io.reactivex.rxjava3.core.ObservableOnSubscribe;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import services.RequestService;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -22,12 +21,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     Button button = null;
     TextView tv = null;
+    Disposable subscription = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,64 +37,40 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postAsynHttp("https://www.baidu.com");
-
+                getRequestMethod("https://wanandroid.com");
             }
         });
 
     }
 
-    private Observable<String> getObservable(final String url) {
-        Observable observable = Observable.create(new ObservableOnSubscribe() {
-            @Override
-            public void subscribe(@NonNull final ObservableEmitter emitter) throws Throwable {
-                OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                        .connectTimeout(15, TimeUnit.SECONDS)
-                        .writeTimeout(20, TimeUnit.SECONDS)
-                        .readTimeout(20, TimeUnit.SECONDS)
-                        .build();
-                Request request = new Request.Builder()
-                        .url(url)
-                        .method("GET", null)
-                        .build();
-                Call call = okHttpClient.newCall(request);
-                call.enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        emitter.onError(new Exception("error"));
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        emitter.onNext(response.body().string());
-                        emitter.onComplete();
-                    }
-                });
-            }
-        });
-        return observable;
-    }
-
-    private void postAsynHttp(String url) {
-        getObservable(url)
+    private void getRequestMethod(String baseUrl) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build();
+        RequestService requestService = retrofit.create(RequestService.class);
+        requestService.getTestPost("wxarticle")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
+                .subscribe(new Observer<TestBean>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
                         Log.e("Jasper", "onSubscribe");
                         tv.setText("onSubscribe");
+                        subscription = d;
                     }
 
                     @Override
-                    public void onNext(@NonNull String s) {
+                    public void onNext(@NonNull TestBean testBean) {
                         Log.e("Jasper", "onNext");
-                        tv.setText(s);
+                        tv.setText(testBean.getData().getSize() + "");
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.e("Jasper", "onError");
+                        Log.e("Jasper", e.getMessage());
                     }
 
                     @Override
@@ -104,5 +78,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Jasper", "onComplete");
                     }
                 });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        subscription.dispose();
     }
 }
